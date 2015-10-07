@@ -1,0 +1,7 @@
+name = Panels insert content
+description = Alternative to the "Add content" interface in Panels
+core = 7.x
+package = "Panels"
+dependencies[] = panels
+dependencies[] = ctools (>=1.4)
+files[] = panels_insert_content.module

@@ -1,0 +1,70 @@
+<?php
+  
+/**
+ * Implement hook_theme_registry_alter
+ */
+function panels_insert_content_theme_registry_alter (&$theme_registry) {
+  $theme_registry['panels_add_content_modal']['path'] = "sites/all/modules/custom/panels_insert_content/templates";
+  $theme_registry['panels_add_content_modal']['theme path'] = "sites/all/modules/custom/panels_insert_content";
+  // $theme_registry['panels_add_content_modal']['includes'][0] = $theme_registry['panels_add_content_modal']['path']."/".$theme_registry['panels_add_content_modal']['file'];
+  // dpm($theme_registry['panels_add_content_modal']);
+}
+  
+function panels_insert_content_preprocess_panels_add_content_modal(&$vars) {
+  drupal_add_js(drupal_get_path("module","panels_insert_content")."/js/jquery-columnnav-1.0.js");
+  drupal_add_js(drupal_get_path("module","panels_insert_content")."/js/jquery.scrollTo.js");
+  drupal_add_js(drupal_get_path("module","panels_insert_content")."/js/panels_insert_content.js");
+}
+  
+function panels_insert_content_process_panels_add_content_modal(&$vars) {
+  
+  // TODO: cache this data
+  // calculate ALL insert links
+  $groups = array();
+  
+  foreach ($vars['categories'] as $key => $value) {
+    $content = $value['content'];
+    $titles = array_keys($content);
+    natcasesort($titles);
+    
+    foreach ($titles as $title) {
+      $groups[$value['title']]["group"] = $value['title'];
+      $groups[$value['title']]['rows'][] = array("group"=>theme('panels_add_content_link', array('renderer' => $vars['renderer'], 'region' => $vars['region'], 'content_type' => $content[$title])));
+    }
+  }
+  $vars['insertlinks'] = panels_insert_content_render_grouping_sets($groups);
+}
+
+function _panels_insert_content_render_group($l, &$output) {
+  foreach($l as $level) {
+    if (is_array($level)) {
+      if(isset($level['group'])) {
+        if (isset($level['rows']) && is_array($level['rows'])) {
+          $output .= '<li><span class="uicni">'.$level['group'].'</span>';
+          $suboutput = "";
+          _panels_insert_content_render_group($level['rows'], $suboutput);
+          if($suboutput != "") {
+            $output .= '<ul class="a">'.$suboutput.'</ul>';
+          }
+        } else {
+          $output .= '<li><span class="uicni">'.$level['group'].'</span>';
+        }
+        $output .='</li>';
+      }
+    }
+  }
+}
+
+/**
+ * Override. Handles the grouping.
+ */
+function panels_insert_content_render_grouping_sets($sets, $level = 0) {
+  if (is_array($sets)) {
+    $output = '<div id="myTree_panels_insert_content"><ul>';
+    _panels_insert_content_render_group($sets, $output);
+    $output .= '</div></ul>';
+  }
+  return $output;
+}
+  
+?>
