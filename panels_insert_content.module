@@ -14,6 +14,7 @@ function panels_insert_content_preprocess_panels_add_content_modal(&$vars) {
   drupal_add_js(drupal_get_path("module","panels_insert_content")."/js/jquery-columnnav-1.0.js");
   drupal_add_js(drupal_get_path("module","panels_insert_content")."/js/jquery.scrollTo.js");
   drupal_add_js(drupal_get_path("module","panels_insert_content")."/js/panels_insert_content.js");
+  drupal_add_css(drupal_get_path("module","panels_insert_content")."/css/panels_insert_content.css");
 }
   
 function panels_insert_content_process_panels_add_content_modal(&$vars) {
@@ -33,6 +34,10 @@ function panels_insert_content_process_panels_add_content_modal(&$vars) {
     }
   }
   $vars['insertlinks'] = panels_insert_content_render_grouping_sets($groups);
+}
+
+function panels_insert_content_preprocess_panels_add_content_link(&$vars) {
+  unset($vars['image_button']);
 }
 
 function _panels_insert_content_render_group($l, &$output) {
@@ -60,7 +65,7 @@ function _panels_insert_content_render_group($l, &$output) {
  */
 function panels_insert_content_render_grouping_sets($sets, $level = 0) {
   if (is_array($sets)) {
-    $output = '<div id="myTree_panels_insert_content"><ul>';
+    $output = '<div id="myTree_panels_insert_content"><ul class="root">';
     _panels_insert_content_render_group($sets, $output);
     $output .= '</div></ul>';
   }

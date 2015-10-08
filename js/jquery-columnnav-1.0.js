@@ -243,7 +243,7 @@
 		});
 		
 		// Ensure each level can scroll within the container
-		$(this).find("ul div").css({
+		$(this).find("ul>div").css({
 			height:"100%",
 			overflowX:"hidden",
 			overflowY:"auto"
