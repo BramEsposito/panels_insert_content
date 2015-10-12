@@ -1,5 +1,13 @@
+div#myTree_panels_insert_content {
+	height: 90%;
+}
+
 #myTree_panels_insert_content ul.a {
 	vertical-align: top;
+}
+
+div#myTree_panels_insert_content .uicni {
+  cursor: pointer;
 }
 
 .content-type-button>div,
@@ -9,7 +17,7 @@
 
 #listFilter {
 	border: 1px solid rgb(178, 178, 178);
-	height: 10%;
+	height: 8%;
 	width: 100%;
 }
 

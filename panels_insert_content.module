@@ -21,19 +21,29 @@ function panels_insert_content_process_panels_add_content_modal(&$vars) {
   
   // TODO: cache this data
   // calculate ALL insert links
-  $groups = array();
+
+  $cid = "panels_insert_content_insertlinks";
+  $cache = cache_get($cid);
+  if ($cache) {
+    $insertLinks = $cache->data;
+  } else {
+    $groups = array();
   
-  foreach ($vars['categories'] as $key => $value) {
-    $content = $value['content'];
-    $titles = array_keys($content);
-    natcasesort($titles);
-    
-    foreach ($titles as $title) {
-      $groups[$value['title']]["group"] = $value['title'];
-      $groups[$value['title']]['rows'][] = array("group"=>theme('panels_add_content_link', array('renderer' => $vars['renderer'], 'region' => $vars['region'], 'content_type' => $content[$title])));
+    foreach ($vars['categories'] as $key => $value) {
+      $content = $value['content'];
+      $titles = array_keys($content);
+      natcasesort($titles);
+      
+      foreach ($titles as $title) {
+        $groups[$value['title']]["group"] = $value['title'];
+        $groups[$value['title']]['rows'][] = array("group"=>theme('panels_add_content_link', array('renderer' => $vars['renderer'], 'region' => $vars['region'], 'content_type' => $content[$title])));
+      }
     }
+
+    $insertLinks = panels_insert_content_render_grouping_sets($groups);
+    cache_set($cid, $insertLinks);
   }
-  $vars['insertlinks'] = panels_insert_content_render_grouping_sets($groups);
+  $vars['insertlinks'] = $insertLinks;
 }
 
 function panels_insert_content_preprocess_panels_add_content_link(&$vars) {

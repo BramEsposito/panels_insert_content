@@ -6,5 +6,5 @@
 ?>
 <div style="height:100%">
 	<div id="listFilter"></div>
-  	<?php print($insertlinks); ?>
+  	<?php print_r($insertlinks); ?>
 </div>

@@ -143,6 +143,7 @@
 			containerBackgroundPosition:"",
 			containerBorder:"1px solid rgb(178,178,178)",
 			columnWidth:250,
+			columnHeight:"100%",
 			columnFontFamily:"'Helvetica Neue', ''HelveticaNeue', Helvetica, sans-serif",
 			columnFontSize:"90%",
 			columnSeperatorStyle:"1px solid rgb(220,220,220)",
@@ -235,7 +236,7 @@
 		// Style the columns
 		$(this).find("ul").css({
 			width:columnWidth,
-			height:configuration.containerHeight,
+			height:configuration.columnHeight,
 			overflowY:"scroll",
 			borderRight:configuration.columnSeperatorStyle,
 			padding:"0",
