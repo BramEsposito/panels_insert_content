@@ -18,13 +18,15 @@ function panels_insert_content_preprocess_panels_add_content_modal(&$vars) {
 }
   
 function panels_insert_content_process_panels_add_content_modal(&$vars) {
-  
-  // TODO: cache this data
+
   // calculate ALL insert links
 
-  $cid = "panels_insert_content_insertlinks";
+  // CACHING: store cache relative to the location they are requested for e.g. content_1
+  $cid = current_path();
   $cache = cache_get($cid);
-  if ($cache) {
+
+  if ($_GET["refresh"]) drupal_set_message("Pane cache cleared");
+  if (!$_GET["refresh"] && $cache) {
     $insertLinks = $cache->data;
   } else {
     $groups = array();
@@ -44,6 +46,9 @@ function panels_insert_content_process_panels_add_content_modal(&$vars) {
     cache_set($cid, $insertLinks,"cache",CACHE_TEMPORARY);
   }
   $vars['insertlinks'] = $insertLinks;
+  // ctools_ajax_text_button does not take a query parameter, so reimplement
+  drupal_add_library('system', 'drupal.ajax');
+  $vars['refreshlink'] = l("Refresh panes", current_path(),array('html' => TRUE, 'attributes' => array('class' => array("use-ajax","clear_cache")),"query"=>array("refresh"=>true)),"Clear the cache to retrieve new panes");
 }
 
 function panels_insert_content_preprocess_panels_add_content_link(&$vars) {
