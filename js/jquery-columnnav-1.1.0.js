@@ -127,8 +127,7 @@
 (function($){
 	$.fn.columnNavigation = function( configuration )
 	{
-    if ($(this).length == 0) return;
-    console.log($(this));
+		if ($(this).length == 0) return;
 		// Check for incoming ul or ol element
 		if( $(this).get(0).tagName != "UL" && $(this).get(0).tagName != "OL" )
 		{
@@ -300,33 +299,31 @@
 		
 		// Setup the onclick function for each link within the tree
 		$(wrapper).find(selectorName+" a").click( function(){
-			console.log("clicked");
+			
 			// Discover where this element is on the page
 			var licoords = $(this).parent().offset();			// li position
-			console.log(new Date().getTime());
+			
 			// Hide lower levels
 			$(this).parent().siblings().find(selectorName).hide();
-			console.log(new Date().getTime());
+			
 			// Deselect other levels
 			$(this).parent().siblings().css( liDeselect );						
-			console.log(new Date().getTime());
+
 			// Deselect other levels children
 			$(this).parent().siblings().find("li").css( liDeselect );
-			console.log(new Date().getTime());
-			// hier
-			console.log($(this).parent().siblings().find("a").length);
+			
 			// Deselect other a links
-			// $(this).parent().siblings().find("a").css( aDeselect );
-			console.log(new Date().getTime());
+			$(this).parent().siblings().find("a.active").css( aDeselect );
+			
 			// Show child menu
 			$(this).parent().find(selectorName+":first").show();
-			console.log(new Date().getTime());
+			
 			// Select this level
 			$(this).parent().css( liSelect );
-			console.log(new Date().getTime());
+			
 			// Highlight the text if required
-			$(this).css( aSelect );
-			console.log(new Date().getTime());
+			$(this).css( aSelect ).addClass("active");
+			
 			// Add scrolling if required
 			if( (licoords.left - containerPosition.left + ( ( configuration.columnWidth * 2 ) - 1 ) > containerSize ) )
 			{	
@@ -335,7 +332,7 @@
 				
 				scrollToLocale( difference );
 			}
-			console.log(new Date().getTime());
+			
 			return false;
 		});
 		

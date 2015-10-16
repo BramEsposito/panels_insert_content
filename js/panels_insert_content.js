@@ -23,8 +23,8 @@
         wto = setTimeout(function() {
           var filter = $(input).val();
           if (filter) {
-            $("ul.root>li").hide();
-            $("div#myTree_panels_insert_content").find(".content-type-button a:contains(" + filter + ")").parents("ul.root>li").show();
+            $("ul.root>div>div>li").hide();
+            $(list).find(".content-type-button a:contains(" + filter + ")").parents("ul.root>div>div>li").show();
 
             $(list).find(".content-type-button a:not(:contains(" + filter + "))").parents("ul.a li").hide();
             $(list).find(".content-type-button a:contains(" + filter + ")").parents("ul.a li").show();
