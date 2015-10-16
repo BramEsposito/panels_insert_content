@@ -11,7 +11,7 @@ function panels_insert_content_theme_registry_alter (&$theme_registry) {
 }
   
 function panels_insert_content_preprocess_panels_add_content_modal(&$vars) {
-  drupal_add_js(drupal_get_path("module","panels_insert_content")."/js/jquery-columnnav-1.0.js");
+  drupal_add_js(drupal_get_path("module","panels_insert_content")."/js/jquery-columnnav-1.1.0.js");
   drupal_add_js(drupal_get_path("module","panels_insert_content")."/js/jquery.scrollTo.js");
   drupal_add_js(drupal_get_path("module","panels_insert_content")."/js/panels_insert_content.js");
   drupal_add_css(drupal_get_path("module","panels_insert_content")."/css/panels_insert_content.css");
@@ -41,7 +41,7 @@ function panels_insert_content_process_panels_add_content_modal(&$vars) {
     }
 
     $insertLinks = panels_insert_content_render_grouping_sets($groups);
-    cache_set($cid, $insertLinks);
+    cache_set($cid, $insertLinks,"cache",CACHE_TEMPORARY);
   }
   $vars['insertlinks'] = $insertLinks;
 }
@@ -55,14 +55,14 @@ function _panels_insert_content_render_group($l, &$output) {
     if (is_array($level)) {
       if(isset($level['group'])) {
         if (isset($level['rows']) && is_array($level['rows'])) {
-          $output .= '<li><span class="uicni">'.$level['group'].'</span>';
+          $output .= '<li><a href="#" class="uicni">'.$level['group'].'</a>';
           $suboutput = "";
           _panels_insert_content_render_group($level['rows'], $suboutput);
           if($suboutput != "") {
-            $output .= '<ul class="a">'.$suboutput.'</ul>';
+            $output .= '<ul class="a"><div>'.$suboutput.'</div></ul>';
           }
         } else {
-          $output .= '<li><span class="uicni">'.$level['group'].'</span>';
+          $output .= '<li>'.$level['group'];
         }
         $output .='</li>';
       }
@@ -75,9 +75,9 @@ function _panels_insert_content_render_group($l, &$output) {
  */
 function panels_insert_content_render_grouping_sets($sets, $level = 0) {
   if (is_array($sets)) {
-    $output = '<div id="myTree_panels_insert_content"><ul class="root">';
+    $output = '<div id="myTree_panels_insert_content"><ul class="root"><div>';
     _panels_insert_content_render_group($sets, $output);
-    $output .= '</div></ul>';
+    $output .= '</div></ul></div>';
   }
   return $output;
 }

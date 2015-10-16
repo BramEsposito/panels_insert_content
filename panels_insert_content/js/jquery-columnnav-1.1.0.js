@@ -1,7 +1,7 @@
 /**
  *  jQuery Column Navigation Plugin
  *	
- *	version 1.0.0
+ *	version 1.1.0
  *	
  *	Written by Sam Clark
  *	http://sam.clark.name
@@ -126,7 +126,32 @@
 
 (function($){
 	$.fn.columnNavigation = function( configuration )
-	{		
+	{
+    if ($(this).length == 0) return;
+    console.log($(this));
+		// Check for incoming ul or ol element
+		if( $(this).get(0).tagName != "UL" && $(this).get(0).tagName != "OL" )
+		{
+			alert( "FATAL ERROR: columnNavigation requires an UL or OL element\nYou supplied a : " + $(this).get(0).tagName );
+			return false;
+		}
+				
+		// Setup the selectors
+		if( $(this).get(0).tagName == "UL" )
+		{
+			var selectorName = "ul";
+		}
+		else if( $(this).get(0).tagName == "OL" )
+		{
+			var selectorName = "ol";
+		}
+		
+		// Wrap the submitted element in a new div
+		$(this).wrap( document.createElement("div") );
+		
+		var wrapper = $(this).parent();
+		
+		
 		// Setup the column navigation object with configuration settings
 		// Overright existing settings where applicable
 		configuration = $.extend({
@@ -143,7 +168,6 @@
 			containerBackgroundPosition:"",
 			containerBorder:"1px solid rgb(178,178,178)",
 			columnWidth:250,
-			columnHeight:"100%",
 			columnFontFamily:"'Helvetica Neue', ''HelveticaNeue', Helvetica, sans-serif",
 			columnFontSize:"90%",
 			columnSeperatorStyle:"1px solid rgb(220,220,220)",
@@ -163,9 +187,16 @@
 			columnScrollVelocity:200,
 			callBackFunction:null
 		}, configuration);
+		
+		// check callback is a function if set
+		if( configuration.callBackFunction != null && jQuery.isFunction( configuration.callBackFunction ) == false )
+		{
+			alert( 'FATAL ERROR: columnNavigation.callBackFunction() is not a function!' );
+			return false;
+		}
 				
 		// Setup the container space using the settings
-		$(this).css({
+		$(wrapper).css({
 			position:configuration.containerPosition,
 			top:configuration.containerTop,
 			left:configuration.containerLeft,
@@ -178,8 +209,8 @@
 			backgroundPosition:configuration.containerBackgroundPosition,
 			backgroundRepeat:configuration.containerBackgroundRepeat,
 			border:configuration.containerBorder,
-			overflowX:"scroll",
-			whiteSpace: "nowrap"
+			overflowX:"auto",
+			overflowY:"hidden"
 		});
 		
 		// LI element deselect state
@@ -217,41 +248,43 @@
 		};
 		
 		// Discover the real container position
-		var containerPosition = $(this).offset();
-		var containerSize = $(this).width();
+		var containerPosition = $(wrapper).find("ul:first").offset();
+		var containerSize = $(wrapper).width();
 				
 		// Setup the column width as a string (for CSS)
 		var columnWidth = configuration.columnWidth + "px";
 		
-		var myself = $(this);	
-		
-		myself.children("ul").css({
-			display:"inline-block",
-			whiteSpace: "normal"
-		});
-		
+		var myself = $(wrapper);
+
 		// Hide and layout children beneath the first level
-		$(this).find("ul li").find("ul").hide();
+		$(wrapper).find(selectorName+":first").find("ul").css({
+			left:columnWidth,
+			top:"0px",
+			position:"absolute"
+		}).hide();
 
 		// Style the columns
-		$(this).find("ul").css({
+		$(wrapper).find(selectorName).css({
+			position:"absolute",
 			width:columnWidth,
-			height:configuration.columnHeight,
-			overflowY:"scroll",
+			height:"100%",
 			borderRight:configuration.columnSeperatorStyle,
 			padding:"0",
 			margin:"0"
 		});
 		
+		// Create the additional required divs
+		$(wrapper).find(selectorName).wrapInner(document.createElement("div"));
+		
 		// Ensure each level can scroll within the container
-		$(this).find("ul>div").css({
+		$(wrapper).find(selectorName+" div").css({
 			height:"100%",
 			overflowX:"hidden",
 			overflowY:"auto"
 		});
 				
 		// Style the internals
-		$(this).find("ul li").css({
+		$(wrapper).find(selectorName+" li").css({
 			listStyle:"none",
 			padding:configuration.columnItemPadding,
 			backgroundColor:configuration.columnDeselectBackgroundColor,
@@ -261,46 +294,39 @@
 		});
 		
 		// Style the unselected links (this overrides specific CSS styles on the page)
-		$(this).find("ul li span.uicni").css(
+		$(wrapper).find(selectorName+" a").css(
 			aDeselect
 			);		
 		
 		// Setup the onclick function for each link within the tree
-		$(this).delegate("span.uicni","click", function() {
-
+		$(wrapper).find(selectorName+" a").click( function(){
+			console.log("clicked");
 			// Discover where this element is on the page
 			var licoords = $(this).parent().offset();			// li position
-			
+			console.log(new Date().getTime());
 			// Hide lower levels
-			$(this).parent().siblings().find("ul").hide();
-			
+			$(this).parent().siblings().find(selectorName).hide();
+			console.log(new Date().getTime());
 			// Deselect other levels
-			$(this).parent().siblings().css( liDeselect );
-			
-			parentColumn = $(this).parent().parent();
-			
-			// Remove the next column
-			parentColumn.nextAll().remove();
-			
+			$(this).parent().siblings().css( liDeselect );						
+			console.log(new Date().getTime());
 			// Deselect other levels children
 			$(this).parent().siblings().find("li").css( liDeselect );
-			
+			console.log(new Date().getTime());
+			// hier
+			console.log($(this).parent().siblings().find("a").length);
 			// Deselect other a links
-			$(this).parent().siblings().find("span.uicni").css( aDeselect );
-			
+			// $(this).parent().siblings().find("a").css( aDeselect );
+			console.log(new Date().getTime());
 			// Show child menu
-			childMenu = $(this).parent().children("ul");
-			childMenu.clone(true).appendTo(myself).show().css({
-				display: "inline-block",
-				whiteSpace: "normal"
-			});
-			
+			$(this).parent().find(selectorName+":first").show();
+			console.log(new Date().getTime());
 			// Select this level
 			$(this).parent().css( liSelect );
-			
+			console.log(new Date().getTime());
 			// Highlight the text if required
 			$(this).css( aSelect );
-			
+			console.log(new Date().getTime());
 			// Add scrolling if required
 			if( (licoords.left - containerPosition.left + ( ( configuration.columnWidth * 2 ) - 1 ) > containerSize ) )
 			{	
@@ -309,16 +335,12 @@
 				
 				scrollToLocale( difference );
 			}
-			
-			
-			// return false;
+			console.log(new Date().getTime());
+			return false;
 		});
-		//$(this).find("ul li a").click(function() {console.log("click on link")});
 		
-		/*
 		// Double decides on task.
-
-		$(this).find("ul li a").dblclick( function() {
+		$(wrapper).find(selectorName+" li a").dblclick( function() {
 			
 			// If there is no callback function, use the existing link
 			if( configuration.callBackFunction == null )
@@ -332,7 +354,7 @@
 				configuration.callBackFunction( linkObject );
 			}
 		});
-		*/
+		
 		// Scrolls the main view
 		function scrollToLocale( difference )
 		{

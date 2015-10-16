@@ -37,6 +37,11 @@
         // fire the above change event after every letter
         $(this).change();
       });
+
+      // Don't submit the form after pressing the Enter key
+      $(form).submit(function( event ) {
+        event.preventDefault();
+      });
     }
   }
 
@@ -46,7 +51,7 @@
         
         jQuery.fn.columnNavigation = Drupal.behaviors.columnNavigation;
         
-        $("div#myTree_panels_insert_content").columnNavigation({
+        $("div#myTree_panels_insert_content ul.root").columnNavigation({
           // containerBackgroundColor  : "rgb(255,255,255)",
           // columnFontFamily      : "Arial,sans-serif",
           containerWidth:"100%",
