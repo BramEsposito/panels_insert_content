@@ -6,12 +6,10 @@
 function panels_insert_content_theme_registry_alter (&$theme_registry) {
   $theme_registry['panels_add_content_modal']['path'] = "sites/all/modules/custom/panels_insert_content/templates";
   $theme_registry['panels_add_content_modal']['theme path'] = "sites/all/modules/custom/panels_insert_content";
-  // $theme_registry['panels_add_content_modal']['includes'][0] = $theme_registry['panels_add_content_modal']['path']."/".$theme_registry['panels_add_content_modal']['file'];
-  // dpm($theme_registry['panels_add_content_modal']);
 }
   
 function panels_insert_content_preprocess_panels_add_content_modal(&$vars) {
-  drupal_add_js(drupal_get_path("module","panels_insert_content")."/js/jquery-columnnav-1.1.0.js");
+  drupal_add_js(drupal_get_path("module","panels_insert_content")."/js/jquery-columnnav.js");
   drupal_add_js(drupal_get_path("module","panels_insert_content")."/js/jquery.scrollTo.js");
   drupal_add_js(drupal_get_path("module","panels_insert_content")."/js/panels_insert_content.js");
   drupal_add_css(drupal_get_path("module","panels_insert_content")."/css/panels_insert_content.css");

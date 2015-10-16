@@ -1,7 +1,7 @@
 /**
  *  jQuery Column Navigation Plugin
  *	
- *	version 1.1.0
+ *	version 1.3.0
  *	
  *	Written by Sam Clark
  *	http://sam.clark.name
@@ -52,40 +52,30 @@
  *	
  *	<html>
  *	<body>
- *	<div id="myTree">
  *		<ul>
- *			<div>	<!-- required to allow scrolling within each column -->
+ *			<li>
+ *				<a href="./">Homepage</a>
+ *				<ul>
+ *					<li><a href="./contact">Contact</a></li>
+ *					<li><a href="./tsandcs">Terms &amp; Conditions</a></li>
+ *					<li><a href="./privacy">Privacy information</a></li>
+ *				</ul>
+ *			</li>
+ *			<li>
+ *			<a href="./contents">Contents</a>
+ *			<ul>
+ *				<li><a href="./page1/">Page 1</a></li>
  *				<li>
- *					<a href="./">Homepage</a>
+ *					<a href="./page2/">Page 2</a>
  *					<ul>
- *						<div>
- *							<li><a href="./contact">Contact</a></li>
- *							<li><a href="./tsandcs">Terms &amp; Conditions</a></li>
- *							<li><a href="./privacy">Privacy information</a></li>
- *						</div>
+ *						<li><a href="./page2.1/">Page 2.1</a></li>
+ *						<li><a href="./page2.2/">Page 2.2</a></li>
  *					</ul>
- *				</li>
- *				<li>
- *					<a href="./contents">Contents</a>
- *					<ul>
- *						<div>
- *							<li><a href="./page1/">Page 1</a></li>
- *							<li>
- *								<a href="./page2/">Page 2</a>
- *								<ul>
- *									<div>
- *									<li><a href="./page2.1/">Page 2.1</a></li>
- *									<li><a href="./page2.2/">Page 2.2</a></li>
- *									</div>
- *								</ul>
- *							</li>
- *							<li><a href="./page3/">Page 3</a></li>
- *						</div>
- *					</ul>
- *				</li>
- *			</div>
+ *					</li>
+ *					<li><a href="./page3/">Page 3</a></li>
+ *				</ul>
+ *			</li>
  *		</ul>
- *	</div>
  *	</body>
  *	</html>
  *	
@@ -184,13 +174,21 @@
 			columnSelectBackgroundPosition:"",
 			columnItemPadding:"3px 3px 5px 3px",
 			columnScrollVelocity:200,
-			callBackFunction:null
+			callBackFunction:null,
+			columnCallBackFunction:null,
 		}, configuration);
 		
 		// check callback is a function if set
 		if( configuration.callBackFunction != null && jQuery.isFunction( configuration.callBackFunction ) == false )
 		{
 			alert( 'FATAL ERROR: columnNavigation.callBackFunction() is not a function!' );
+			return false;
+		}
+		
+		// check columnCallBackFrunction is a function if set
+		if( configuration.columnCallBackFunction != null && jQuery.isFunction( configuration.columnCallBackFunction ) == false )
+		{
+			alert( 'FATAL ERROR: columnNavigation.columnCallBackFunction() is not a function!' );
 			return false;
 		}
 				
@@ -333,7 +331,16 @@
 				scrollToLocale( difference );
 			}
 			
-			return false;
+			if( configuration.columnCallBackFunction == null )
+			{
+				return false;				
+			}
+			else
+			{
+				var linkObject = $(this);
+				configuration.callBackFunction( linkObject );
+				return false;
+			}
 		});
 		
 		// Double decides on task.
