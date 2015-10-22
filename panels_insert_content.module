@@ -28,6 +28,11 @@ function panels_insert_content_process_panels_add_content_modal(&$vars) {
     $insertLinks = $cache->data;
   } else {
     $groups = array();
+    $groups['specials']["group"] = t("Specials");
+    $groups['specials']['rows'] = array();
+    $groups['new_fpp']["group"] = t("Create new FPP");
+    $groups['new_fpp']['rows'] = array();
+    
   
     foreach ($vars['categories'] as $key => $value) {
       $content = $value['content'];
@@ -37,9 +42,27 @@ function panels_insert_content_process_panels_add_content_modal(&$vars) {
       foreach ($titles as $title) {
         $groups[$value['title']]["group"] = $value['title'];
         $groups[$value['title']]['rows'][] = array("group"=>theme('panels_add_content_link', array('renderer' => $vars['renderer'], 'region' => $vars['region'], 'content_type' => $content[$title])));
+
+        if ($content[$title]["type_name"] == "fieldable_panels_pane") {
+          if (isset($content[$title]['create content access'])) {
+            
+            $groups['new_fpp']['rows'][] = array("group"=>theme('panels_add_content_link', array('renderer' => $vars['renderer'], 'region' => $vars['region'], 'content_type' => $content[$title]))); 
+          }
+        }
+
+        if ($content[$title]["type_name"] != "fieldable_panels_pane" &&
+            $content[$title]["type_name"] != "block" &&
+            $content[$title]["type_name"] != "menu_tree" &&
+            $content[$title]["type_name"] != "token" &&
+            $content[$title]["type_name"] != "views" &&
+            $content[$title]["type_name"] != "views_panes") {
+          $groups['specials']['rows'][] = array("group"=>theme('panels_add_content_link', array('renderer' => $vars['renderer'], 'region' => $vars['region'], 'content_type' => $content[$title]))); 
+        }
+        
       }
     }
 
+    // TODO: sort the specials list
     $insertLinks = panels_insert_content_render_grouping_sets($groups);
     cache_set($cid, $insertLinks,"cache",CACHE_TEMPORARY);
   }
@@ -50,6 +73,7 @@ function panels_insert_content_process_panels_add_content_modal(&$vars) {
 }
 
 function panels_insert_content_preprocess_panels_add_content_link(&$vars) {
+  // THIS CAUSES UNNECESSARY PHP NOTICES
   unset($vars['image_button']);
 }
 
