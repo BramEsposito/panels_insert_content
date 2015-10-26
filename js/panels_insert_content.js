@@ -62,6 +62,11 @@
           // columnSelectBackgroundColor:"rgb(0,0,255)",
           columnScrollVelocity    : 400
         });
+        // fix buttons overflow
+        $(".content-type-button").css({
+          overflowX:"initial",
+          overflowY:"initial"
+        });
       }
     }
 })(jQuery);
